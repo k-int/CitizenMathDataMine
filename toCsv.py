@@ -53,8 +53,9 @@ for student_property in student_properties_data_as_json['rows']:
   if ( json_str is not None ) :
     json_value = json.loads(json_str);
   # print student_id
-  student_info_map = student_data[student_id]
-  if student_info_map :
+ 
+  if student_id in student_data.keys() :
+    student_info_map = student_data[student_id]
     # print('Located that student')
     student_info_map['value'] = json_value
     if ( json_value != None ) :
