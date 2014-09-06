@@ -30,6 +30,7 @@ student_properties_data_as_json = json.loads(student_property_data)
 # pprint(student_properties_data_as_json)
 
 student_data = {}
+learner_types = []
 additional_properties = []
 completion_status = []
 
@@ -39,12 +40,23 @@ for student in student_data_as_json['rows']:
   additional_data = json.loads(student['additional_fields'])
   student_data[student['user_id']] = { 'name':student['key.name'], 'additional':{} }
 
-  
+  if 'learner_type' in student.keys() :
+    if isinstance(student['learner_type'],list) :
+      for t in student['learner_type'] :
+        if t not in learner_types :
+          learner_types.append(t);
+    else:
+      if student['learner_type'] not in learner_types :
+        learner_types.append(student['learner_type'])
 
   for additional_prop in additional_data:
     if ( additional_prop[0] not in additional_properties ) :
       additional_properties.append(additional_prop[0]);
-    student_data[student['user_id']]['additional'][additional_prop[0]] = additional_prop[1]
+
+    if additional_prop[0] in student_data[student['user_id']]['additional'].keys() :
+      student_data[student['user_id']]['additional'][additional_prop[0]].append(additional_prop[1])
+    else:
+      student_data[student['user_id']]['additional'][additional_prop[0]] = [additional_prop[1]]
 
 for student_property in student_properties_data_as_json['rows']:
   student_id_value = student_property['key.name']
@@ -58,7 +70,9 @@ for student_property in student_properties_data_as_json['rows']:
  
   if student_id in student_data.keys() :
     student_info_map = student_data[student_id]
+    pprint(student_info_map)
     # print('Located that student')
+
     student_info_map['value'] = json_value
     if ( json_value != None ) :
       for key in json_value :
@@ -66,10 +80,11 @@ for student_property in student_properties_data_as_json['rows']:
           completion_status.append(key)
     else :
        student_info_map['value'] = {}
-  else:
-    print('Cant find that student')
 
+  #else:
+    # print('Cant find that student')
 
+pprint ( learner_types )
 # pprint(student_data)
 # pprint(additional_properties)
 # pprint(completion_status)
@@ -85,17 +100,24 @@ print('')
 
 for student_key in student_data :
   student = student_data[student_key]
-  print("'"+student['name']+"'", end='')
+  print("\""+student['name']+"\"", end='')
   for prop in additional_properties :
     if ( prop in student['additional'] ) :
-      print(",'"+(student['additional'][prop])+"'",end='')
+      print(",\"",end='')
+      ctr = 0
+      for v in student['additional'][prop]:
+        if ( ctr > 0 ) :
+          print(' ',end='')
+        print(v,end='')
+        ctr = ctr +1
+      print("\"",end='')
     else :
       print(',', end='')
   for completion_key in completion_status:
     if ( completion_key in student['value'] ) :
-      print(",'", end="");
+      print(",\"", end="");
       print(student['value'][completion_key], end="")
-      print("'", end="");
+      print("\"", end="");
     else :
       print(',', end='')
   print('')
