@@ -4,6 +4,8 @@ import json
 import sys
 from pprint import pprint
 
+reload(sys) 
+sys.setdefaultencoding('utf-8')
 
 zf = zipfile.ZipFile('archive.zip', 'r')
 # print zf.namelist()
