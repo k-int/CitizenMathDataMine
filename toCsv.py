@@ -40,15 +40,6 @@ for student in student_data_as_json['rows']:
   additional_data = json.loads(student['additional_fields'])
   student_data[student['user_id']] = { 'name':student['key.name'], 'additional':{} }
 
-  if 'learner_type' in student.keys() :
-    if isinstance(student['learner_type'],list) :
-      for t in student['learner_type'] :
-        if t not in learner_types :
-          learner_types.append(t);
-    else:
-      if student['learner_type'] not in learner_types :
-        learner_types.append(student['learner_type'])
-
   for additional_prop in additional_data:
     if ( additional_prop[0] not in additional_properties ) :
       additional_properties.append(additional_prop[0]);
@@ -57,6 +48,11 @@ for student in student_data_as_json['rows']:
       student_data[student['user_id']]['additional'][additional_prop[0]].append(additional_prop[1])
     else:
       student_data[student['user_id']]['additional'][additional_prop[0]] = [additional_prop[1]]
+
+  if 'learner_type' in student_data[student['user_id']]['additional'] :
+    for lt in student_data[student['user_id']]['additional']['learner_type']:
+      if lt not in learner_types :
+        learner_types.append(lt);
 
 for student_property in student_properties_data_as_json['rows']:
   student_id_value = student_property['key.name']
@@ -70,7 +66,7 @@ for student_property in student_properties_data_as_json['rows']:
  
   if student_id in student_data.keys() :
     student_info_map = student_data[student_id]
-    pprint(student_info_map)
+    # pprint(student_info_map)
     # print('Located that student')
 
     student_info_map['value'] = json_value
@@ -84,7 +80,7 @@ for student_property in student_properties_data_as_json['rows']:
   #else:
     # print('Cant find that student')
 
-pprint ( learner_types )
+# pprint ( learner_types )
 # pprint(student_data)
 # pprint(additional_properties)
 # pprint(completion_status)
@@ -93,8 +89,12 @@ print( 'name', end='' )
 for prop in additional_properties :
   print(',' + prop, end ='' )
 
-for prop in completion_status :
-  print(',' + prop, end='' )
+for lt in learner_types:
+  print(',' + lt, end ='' )
+# for prop in completion_status :
+#   print(',' + prop, end='' )
+
+
 
 print('')
 
@@ -113,13 +113,20 @@ for student_key in student_data :
       print("\"",end='')
     else :
       print(',', end='')
-  for completion_key in completion_status:
-    if ( completion_key in student['value'] ) :
-      print(",\"", end="");
-      print(student['value'][completion_key], end="")
-      print("\"", end="");
-    else :
-      print(',', end='')
+#  for completion_key in completion_status:
+#    if ( completion_key in student['value'] ) :
+#      print(",\"", end="");
+#      print(student['value'][completion_key], end="")
+#      print("\"", end="");
+#    else :
+#      print(',', end='')
+
+  for lt in learner_types:
+    if 'learner_type' in student['additional'].keys() and lt in student['additional']['learner_type']:
+      print('Y,',end='')
+    else:
+      print(',',end='')
+    
   print('')
 
 
