@@ -100,19 +100,20 @@ print('')
 
 for student_key in student_data :
   student = student_data[student_key]
-  print("\""+student['name']+"\"", end='')
+  print("\""+student['name']+"\",", end='')
   for prop in additional_properties :
+    print("\"",end='')
     if ( prop in student['additional'] ) :
-      print(",\"",end='')
       ctr = 0
       for v in student['additional'][prop]:
         if ( ctr > 0 ) :
           print(' ',end='')
         print(v,end='')
         ctr = ctr +1
-      print("\"",end='')
     else :
-      print(',', end='')
+      print('', end='')
+    print("\",",end='')
+
 #  for completion_key in completion_status:
 #    if ( completion_key in student['value'] ) :
 #      print(",\"", end="");
@@ -121,11 +122,15 @@ for student_key in student_data :
 #    else :
 #      print(',', end='')
 
+  # LEarner type processing
   for lt in learner_types:
+    # If the student has a learner type property
+    print("\"",end='')
     if 'learner_type' in student['additional'].keys() and lt in student['additional']['learner_type']:
-      print('Y,',end='')
+      print('Y',end='')
     else:
-      print(',',end='')
+      print('N',end='')
+    print("\",",end='')
     
   print('')
 
