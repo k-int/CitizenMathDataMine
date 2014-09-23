@@ -85,6 +85,9 @@ for student_property in student_properties_data_as_json['rows']:
 # pprint(additional_properties)
 # pprint(completion_status)
 
+learner_types.sort()
+additional_properties.sort()
+
 print( 'name', end='' )
 for prop in additional_properties :
   print(',' + prop, end ='' )
